@@ -41,10 +41,20 @@ public class Examiner {
 	
 	public static void examine(String name, Object o, int depth, Handler h)
 			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		h.beginObject(name, o, depth);
+		
+		examineObjectAsBean(o, depth, h);
+
+		examineObjectAsCollection(o, depth, h);
+		
+		examineObjectAsArray(o, depth, h);
+		
+		h.endObject(o, depth);
+	}
+	
+	private static void examineObjectAsBean(Object o, int depth, Handler h) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Class<?> c = o.getClass();
 		
-		h.beginObject(name, o, depth);
-
 		BeanInfo beaninfo = Introspector.getBeanInfo(c);
 
 		PropertyDescriptor[] pds = beaninfo.getPropertyDescriptors();
@@ -52,7 +62,9 @@ public class Examiner {
 		for (int i = 0; i < pds.length; i++) {
 			displayProperty(o, pds[i], depth, h);
 		}
-		
+	}
+	
+	private static void examineObjectAsCollection(Object o, int depth, Handler h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 		if (o instanceof Collection) {
 			Collection<?> coll = (Collection<?>)o;
 			
@@ -64,8 +76,10 @@ public class Examiner {
 				examine(iter.next(), depth+2, h);
 			
 			h.endCollection(o, depth+1);
-		}
-		
+		}	
+	}
+	
+	private static void examineObjectAsArray(Object o, int depth, Handler h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
 		if (o.getClass().isArray()) {
 			h.beginArray(o, depth+1);
 			
@@ -77,8 +91,6 @@ public class Examiner {
 			
 			h.endArray(o, depth+1);
 		}
-		
-		h.endObject(o, depth);
 	}
 
 	private static void displayProperty(Object o, PropertyDescriptor pd, int depth, Handler h)
