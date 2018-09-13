@@ -28,6 +28,7 @@ import java.io.PrintStream;
 
 public class DefaultHandler implements Handler {
 	private PrintStream ps = System.out;
+	private boolean printHashCode = false;
 	
 	public void setPrintStream(PrintStream ps) {
 		this.ps = ps;
@@ -35,6 +36,14 @@ public class DefaultHandler implements Handler {
 	
 	public PrintStream getPrintStream() {
 		return ps;
+	}
+	
+	public void setPrintHashCode(boolean printHashCode) {
+		this.printHashCode = printHashCode;
+	}
+	
+	public boolean getPrintHashCodee() {
+		return printHashCode;
 	}
 	
 	private void indent(int depth) {
@@ -53,6 +62,12 @@ public class DefaultHandler implements Handler {
 		String className = c.isArray() ? "Array of " + c.getComponentType().getName() : c.getName();
 		
 		ps.println(className + (c.isArray() ? " [" : " {"));
+		
+		if (printHashCode) {
+			indent(depth+1);
+			
+			ps.println("hashCode = " + o.hashCode());
+		}
 	}
 
 	public void endObject(Object o, int depth) {
