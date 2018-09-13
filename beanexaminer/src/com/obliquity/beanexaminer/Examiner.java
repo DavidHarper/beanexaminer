@@ -35,24 +35,24 @@ import java.util.Iterator;
 
 public class Examiner {	
 	public static void examine(Object o, int depth, Handler h)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException, ExaminerMaximumDepthReachedException {
 		examine(null, o, depth, h, Integer.MAX_VALUE);
 	}
 
 	public static void examine(Object o, int depth, Handler h, int maxdepth)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException, ExaminerMaximumDepthReachedException {
 		examine(null, o, depth, h, maxdepth);
 	}
 	
 	public static void examine(String name, Object o, int depth, Handler h)
-			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ExaminerMaximumDepthReachedException {
 		examine(name, o, depth, h, Integer.MAX_VALUE);
 	}
 
 	public static void examine(String name, Object o, int depth, Handler h, int maxdepth)
-			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ExaminerMaximumDepthReachedException {
 		if (depth > maxdepth)
-			return;
+			throw new ExaminerMaximumDepthReachedException(name, 0, maxdepth);
 		
 		h.beginObject(name, o, depth);
 		
@@ -65,7 +65,7 @@ public class Examiner {
 		h.endObject(o, depth);
 	}
 	
-	private static void examineObjectAsBean(Object o, int depth, Handler h) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	private static void examineObjectAsBean(Object o, int depth, Handler h) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ExaminerMaximumDepthReachedException {
 		Class<?> c = o.getClass();
 		
 		BeanInfo beaninfo = Introspector.getBeanInfo(c);
@@ -77,7 +77,7 @@ public class Examiner {
 		}
 	}
 	
-	private static void examineObjectAsCollection(Object o, int depth, Handler h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+	private static void examineObjectAsCollection(Object o, int depth, Handler h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException, ExaminerMaximumDepthReachedException {
 		if (o instanceof Collection) {
 			Collection<?> coll = (Collection<?>)o;
 			
@@ -92,7 +92,7 @@ public class Examiner {
 		}	
 	}
 	
-	private static void examineObjectAsArray(Object o, int depth, Handler h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+	private static void examineObjectAsArray(Object o, int depth, Handler h) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException, ExaminerMaximumDepthReachedException {
 		if (o.getClass().isArray()) {
 			h.beginArray(o, depth+1);
 			
@@ -107,7 +107,7 @@ public class Examiner {
 	}
 
 	private static void displayProperty(Object o, PropertyDescriptor pd, int depth, Handler h)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException, ExaminerMaximumDepthReachedException {
 		String name = pd.getName();
 		
 		if (name.equalsIgnoreCase("class"))

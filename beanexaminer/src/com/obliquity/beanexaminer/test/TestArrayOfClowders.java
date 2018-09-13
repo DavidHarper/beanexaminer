@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.obliquity.beanexaminer.DefaultHandler;
 import com.obliquity.beanexaminer.Examiner;
+import com.obliquity.beanexaminer.ExaminerMaximumDepthReachedException;
 import com.obliquity.beanexaminer.Handler;
 
 public class TestArrayOfClowders {
@@ -78,7 +79,7 @@ public class TestArrayOfClowders {
 			Examiner.examine(clowders, 0, h);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException
-				| SecurityException | IntrospectionException e) {
+				| SecurityException | IntrospectionException | ExaminerMaximumDepthReachedException e) {
 			e.printStackTrace();
 		}
 	}
