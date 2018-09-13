@@ -36,11 +36,24 @@ import java.util.Iterator;
 public class Examiner {	
 	public static void examine(Object o, int depth, Handler h)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
-		examine(null, o, depth, h);
+		examine(null, o, depth, h, Integer.MAX_VALUE);
+	}
+
+	public static void examine(Object o, int depth, Handler h, int maxdepth)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+		examine(null, o, depth, h, maxdepth);
 	}
 	
 	public static void examine(String name, Object o, int depth, Handler h)
 			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		examine(name, o, depth, h, Integer.MAX_VALUE);
+	}
+
+	public static void examine(String name, Object o, int depth, Handler h, int maxdepth)
+			throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		if (depth > maxdepth)
+			return;
+		
 		h.beginObject(name, o, depth);
 		
 		examineObjectAsBean(o, depth, h);
