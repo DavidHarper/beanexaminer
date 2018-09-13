@@ -30,6 +30,14 @@ public class DefaultHandler implements Handler {
 	private PrintStream ps = System.out;
 	private boolean printHashCode = false;
 	
+	public DefaultHandler() {
+		this(false);
+	}
+	
+	public DefaultHandler(boolean printHashCode) {
+		this.printHashCode = printHashCode;
+	}
+	
 	public void setPrintStream(PrintStream ps) {
 		this.ps = ps;
 	}
